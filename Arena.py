@@ -23,6 +23,19 @@ class Arena():
         self.player2 = player2
         self.game = game
         self.display = display
+        
+    def valuesMaxMin(self, board, curPlayer):
+        if self.game.getGameEnded(board, curPlayer):
+            return [self.game.getScore( board, curPlayer)]
+        
+        #valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer),1)
+
+        values = [-999]*(self.game.n * self.game.n + 1)
+        d = {}
+        for action in  self.game.getLegalMoves(self.game.getCanonicalForm(board, curPlayer),1):
+            board1, _ = self.game.getNextState(board, curPlayer, action)
+            values[action] = min( [-x for x in self.valuesMaxMin( board1, -curPlayer) if x!=-999] )
+
 
     def playGame(self, verbose=False, rnd = None):
         """
@@ -44,12 +57,21 @@ class Arena():
                 assert(self.display)
                 print("Turn ", str(it), "Player ", str(curPlayer))
                 self.display(board)
-            if rnd is None or it > rnd or curPlayer == 1:    
+  
+            valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer),1)
+            
+            '''if rnd is None or it > rnd or curPlayer == 1:    
                 action = players[curPlayer+1](self.game.getCanonicalForm(board, curPlayer))
             else:                
-                action = self.game.getRandomMove(self.game.getCanonicalForm(board, curPlayer),1)
-            
-            valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer),1)
+                action = self.game.getRandomMove(self.game.getCanonicalForm(board, curPlayer),1)'''
+          
+            if curPlayer ==1 or it< 43:
+                #action = np.random.choice(len(valids), 1, p=valids/np.sum(valids))
+                action = players[curPlayer+1](self.game.getCanonicalForm(board, curPlayer))
+            else:  
+                values = self.valuesMaxMin(board, curPlayer)
+                #print([x for x in values if x != -999] )
+                action = np.argmax( values)
 
             if valids[action]==0:
                 print(action)
