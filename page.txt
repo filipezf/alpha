@@ -1,0 +1,41 @@
+A minute to learn, forever to stop being a novice.
+
+The game starts with an empty grid of NxN squares, where White (who starts) and Black alternatively put pieces.
+Rule 1 (and only).
+ - When a piece is placed, you trace rays in the 8 directions (left right up down and 4 diagonals) flipping pieces until hitting an empty square.
+
+{add image}
+
+Rationale:
+----------
+
+This is an example of a simple but very hard to learn game.
+
+The most pure example of an unlearnable game would be one where there is an empty array of L bits and players alternatively add an 0 or 1 in the next position. After L rounds a a random function 2^L -> 2  determinies the winner - in the practical case the functon can be a cryptographic hash (like MD5 or SHA) maybe adding a salt, and the winner determined by for example the least significant bit of the result. As this would be very unintuitive I selected the flipping rule above that promotes a mixing of board states.
+
+The game's sucessive fllipping of pieces causes an avalanche effect [cite] (where one small alteration causes a larger effect afterwards), making the final state effectively unpredictable.
+
+I trained a bot [cite alphazero general] that uses the same technique of alphazero[cite] - monte carlo tree search[cite] and a deep neural network[cite] for board evaluation.
+
+{Add files here}
+
+Unsurprisingly (as it was the intention) the board evaluation proved unlearnable; in 16 training iterations no network proved superior to the initial. I hypothetise that the only way to be an effective player is to list all possible continuations from a given configuration and use a minimax [cite] algorithm.
+
+Between two bots, the one with larger lookahead (more processing budget) will always win. In the same way, as humans can only predict few next steps, they will (almost) always lose to the bot (unless arriving to a very lucky position where all continuations lead to a human win.
+
+Like in chess and go, we call tactics the short-time and strategy as a longer-term view of the game.
+Chess engines were usually good at tactics but bad at strategy. But with the progress of technology they are now definitively superior to humans. I thus declare that this game has no strategy and the only way to win is being superior at tactics (lookahead). Does this makes it boring ?
+ 
+If you use a square 11 x 11, there will be 3^121 possible states, making its complexity compareable to strong cryptography. For example the hash SHA256 with 256 bits of output is considered safe as it aims for 256/2  = 128 bits of strength (the birthday attack [cite] halves the number of effective bits).  
+
+Try here.
+
+Possible variants:
+- the flipping area as a square centered on the placed piece, or knight moves away, prime numbers, etc.
+- stop the game and evaluate the winner before all pieces ar e placed.
+- Add a move to one or both players where he can
+- both players put pieces simultaneously (ex. backtracing if there is collision and draw if the collision continues)  
+- more than two players - (maybe even a Massively multiplayer online)
+- triangular or  hexagonal grids; 3,4,N-dimensional grid, playing on a graph [cite topological Go]
+- realtime /kung-fu placing [cite](?)
+
