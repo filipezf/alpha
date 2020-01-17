@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>BlocksWorld - Physijs</title>
+	
+	<link rel="stylesheet" type="text/css" href="examples/css/styles.css" />
+	
+	<script type="text/javascript" src="examples/js/three.min.js"></script>
+	<script type="text/javascript" src="examples/js/stats.js"></script>
+	<script type="text/javascript" src="examples/js/tween.js"></script>
+
+	<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+</head>
+
+<body>
+	<div id="heading">
+		<h1>Letterworld in Physijs</h1>
+		
+	</div>
+	<div id="viewport"></div>
+
+	<script type="text/javascript">
+	
+	'use strict';
+
+	var t = 0;
+
+	var id= Math.random();
+	var renderer, render_stats, physics_stats, scene, light, ground, ground_material, camera;
+
+
+	var	table, table_material, block_material, block_offset = new THREE.Vector3, _i, _v3 = new THREE.Vector3;
+
+	var group;
+
+		init();
+	animate();
+
+	function init (font) {
+		TWEEN.start();
+		
+		renderer = new THREE.WebGLRenderer({ antialias: true });
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.shadowMapEnabled = true;
+		renderer.shadowMapSoft = true;
+		document.getElementById( 'viewport' ).appendChild( renderer.domElement );
+		
+		render_stats = new Stats();
+		render_stats.domElement.style.position = 'absolute';
+		render_stats.domElement.style.top = '0px';
+		render_stats.domElement.style.zIndex = 100;
+	//	document.getElementById( 'viewport' ).appendChild( render_stats.domElement );
+		
+	
+	
+		
+		camera = new THREE.PerspectiveCamera(
+			35,
+			window.innerWidth / window.innerHeight,
+			1,
+			1000
+		);
+		
+// create a Scene
+scene = new THREE.Scene();
+
+// Set the background color
+scene.background = new THREE.Color( 'skyblue' );
+
+		camera.position.set(0,30,50 );
+
+		camera.lookAt( new THREE.Vector3( 0, 5.5, 0 ) );
+		scene.add( camera );
+		
+		// Light
+		light = new THREE.DirectionalLight( 0xFFFFFF );
+		light.position.set( 20, 40, 15 );
+		light.target.position.copy( scene.position );
+		light.castShadow = true;
+		light.shadowCameraLeft = -60;
+		light.shadowCameraTop = -60;
+		light.shadowCameraRight = 60;
+		light.shadowCameraBottom = 60;
+		light.shadowCameraNear = 20;
+		light.shadowCameraFar = 200;
+		light.shadowBias = -.0001
+		light.shadowMapWidth = light.shadowMapHeight = 2048;
+		light.shadowDarkness = .7;
+		scene.add( light );
+		
+		// Materials
+	
+		// create a geometry
+		const geometry  = new THREE.CylinderGeometry( 1, 1, 10, 32 );
+		const material = new THREE.MeshBasicMaterial();
+
+		const cube1 = new THREE.Mesh( geometry, ground_material );
+		cube1.position.y = 5;
+		group = new THREE.Group();
+		group.add( cube1 );		
+
+		const cube2 = new THREE.Mesh( geometry, ground_material );
+		cube2.position.y = 5;
+		const group2 = new THREE.Group();
+		group2.add( cube2 );
+		group2.rotateOnWorldAxis( new THREE.Vector3(1,0,0), Math.acos(-1.0/3) );
+		group.add( group2 );
+
+		const cube3 = new THREE.Mesh( geometry, ground_material );
+		cube3.position.y = 5;
+		const group3 = new THREE.Group();
+		group3.add( cube3 );
+		group3.rotateOnWorldAxis( new THREE.Vector3(1,0,0), Math.acos(-1.0/3) );
+		group3.rotateOnWorldAxis( new THREE.Vector3(0,1,0),  Math.PI*2/3 );	
+		group.add( group3 );
+
+		const cube4 = new THREE.Mesh( geometry, ground_material );
+		cube4.position.y = 5;
+		const group4 = new THREE.Group();
+		group4.add( cube4 );	
+		group4.rotateOnWorldAxis( new THREE.Vector3(1,0,0), Math.acos(-1.0/3) );
+		group4.rotateOnWorldAxis( new THREE.Vector3(0,1,0),  -Math.PI*2/3 );	
+		group.add( group4 );
+
+		scene.add( group );
+			
+
+	}
+	
+	
+	function animate() {
+		// render the 3D scene
+		render();
+		// relaunch the 'timer' 
+		requestAnimationFrame( animate );
+		// update the Stats element
+		render_stats.update();
+	}
+			/**
+			 * Render the 3D scene
+			*/
+	function render() {
+		// animate the cube
+		group.rotation.x += 0.02;
+		group.rotation.y += 0.0225;
+		group.rotation.z += 0.0175;
+		
+		renderer.render( scene, camera );
+	}
+	//window.onload = initScene;
+	
+	</script>
+</body>	
+
+</html>
